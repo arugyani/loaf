@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "generated_at": "2026-04-18T02:34:13.453Z",
+  "slices": [
+    {
+      "id": "dual-binary-layout",
+      "title": "Why there are two bin entries sharing one compiled tree",
+      "tags": [
+        "packaging",
+        "cli",
+        "mcp"
+      ],
+      "cited_files": [
+        "src/cli.ts",
+        "src/mcp.ts",
+        "package.json",
+        "tsconfig.json"
+      ],
+      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2",
+      "path": ".loaf/slices/dual-binary-layout.md"
+    },
+    {
+      "id": "mcp-session-hint",
+      "title": "How the MCP server injects a session hint on first tool call",
+      "tags": [
+        "mcp",
+        "discovery",
+        "design"
+      ],
+      "cited_files": [
+        "src/mcp.ts"
+      ],
+      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2",
+      "path": ".loaf/slices/mcp-session-hint.md"
+    },
+    {
+      "id": "slice-frontmatter-contract",
+      "title": "Slice frontmatter contract and id uniqueness rules",
+      "tags": [
+        "slices",
+        "format",
+        "design"
+      ],
+      "cited_files": [
+        "src/slices.ts",
+        "src/types.ts",
+        "src/paths.ts"
+      ],
+      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2",
+      "path": ".loaf/slices/slice-frontmatter-contract.md"
+    },
+    {
+      "id": "staleness-contract",
+      "title": "Staleness check contract and why it doesn't hard-block",
+      "tags": [
+        "staleness",
+        "design",
+        "git"
+      ],
+      "cited_files": [
+        "src/staleness.ts",
+        "src/git.ts"
+      ],
+      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2",
+      "path": ".loaf/slices/staleness-contract.md"
+    }
+  ],
+  "crumbs": [
+    {
+      "target": ".loaf/index.json",
+      "path": ".loaf/crumbs/loaf-index-json.md",
+      "severity": "warning",
+      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2"
+    }
+  ]
+}
