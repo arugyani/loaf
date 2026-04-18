@@ -7,6 +7,7 @@ import {
   type Tool,
 } from "@modelcontextprotocol/sdk/types.js";
 
+import path from "node:path";
 import { findRepoRoot } from "./paths.js";
 import {
   listSlices,
@@ -23,7 +24,18 @@ import { writeIndex } from "./indexer.js";
 import { currentHead, shortHead } from "./git.js";
 import type { Slice } from "./types.js";
 
-const repoRoot = findRepoRoot();
+function resolveRepoRoot(): string {
+  // Precedence: --repo flag, $LOAF_REPO env, walk up from cwd.
+  const args = process.argv.slice(2);
+  const idx = args.findIndex((a) => a === "--repo" || a === "-C");
+  if (idx !== -1 && args[idx + 1]) return path.resolve(args[idx + 1]!);
+  const eq = args.find((a) => a.startsWith("--repo="));
+  if (eq) return path.resolve(eq.slice("--repo=".length));
+  if (process.env.LOAF_REPO) return path.resolve(process.env.LOAF_REPO);
+  return findRepoRoot();
+}
+
+const repoRoot = resolveRepoRoot();
 
 let sessionInitialized = false;
 

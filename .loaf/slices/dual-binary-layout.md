@@ -6,14 +6,18 @@ cited_files:
   - src/mcp.ts
   - package.json
   - tsconfig.json
-last_baked_commit: afc58c7e8549da0a5ece78de3f508b1d042213a2
+last_baked_commit: PENDING
 created_by: model
 tags: [packaging, cli, mcp]
 ---
 
-`package.json` publishes two bin names from one build: `loaf` → `dist/cli.js`, `loaf-mcp` → `dist/mcp.js`. They're separate entrypoints, not a wrapper over a common main, because the MCP server must claim stdio immediately on process start — any early stdout from CLI argument parsing or commander help text would corrupt the JSON-RPC stream.
+`package.json` publishes two bin names from one build: `loafmd` → `dist/cli.js`, `loafmd-mcp` → `dist/mcp.js`. They're separate entrypoints, not a wrapper over a common main, because the MCP server must claim stdio immediately on process start — any early stdout from CLI argument parsing or commander help text would corrupt the JSON-RPC stream.
 
-The CLI exposes a `loaf mcp` subcommand that dynamically `await import("./mcp.js")`. That's convenience only: `npx loaf mcp` and `npx loaf-mcp` are functionally identical once the module loads. Direct `loaf-mcp` is preferred in MCP client config because it avoids commander's overhead and matches the binary name clients typically expect.
+The package is named `loafmd` (not `loaf`) because the `loaf` slot on npm was taken. Internal module names, MCP tool names (`loaf.status`, `loaf.get`, …), and the `.loaf/` directory all keep the short form. Only the npm package and the CLI binary are suffixed.
+
+The CLI exposes a `loafmd mcp` subcommand that dynamically `await import("./mcp.js")`. That's convenience only: `npx loafmd mcp` and `npx -y loafmd-mcp` are functionally identical once the module loads. Direct `loafmd-mcp` is preferred in MCP client config because it avoids commander's overhead and matches the binary name clients typically expect.
+
+The MCP entrypoint resolves its target repo with this precedence: `--repo <path>` (or `-C <path>`), then `$LOAF_REPO`, then walking up from `cwd` looking for `.git/`. `loafmd init` prints a ready-to-paste config that always passes `--repo` explicitly, because clients differ on whether they honor `cwd` in server config.
 
 Both entry files start with `#!/usr/bin/env node` and are marked executable by npm at pack time via `bin` declarations — you don't need to `chmod +x` manually. `"type": "module"` + `NodeNext` means every intra-package import uses explicit `.js` suffixes even in `.ts` source. Forgetting this breaks `tsc --build` output at runtime.
 
