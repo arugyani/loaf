@@ -5,7 +5,7 @@ import { resolveLoafPaths } from "./paths.js";
 import { writeIndex } from "./indexer.js";
 import type { LoafConfig } from "./types.js";
 
-const AGENTS_SECTION = `\n## Loaf knowledge layer\n\nThis repo uses [Loaf](https://github.com/arugyani/loaf) to track atomic, model-curated knowledge slices under \`.loaf/\`.\n\n- Prefer \`loaf.search\` and \`loaf.get\` over reading raw source files when answering architectural or \"why is this done this way\" questions.\n- Call \`loaf.status\` at the start of a session to see what exists and what is stale.\n- When you recover from a mistake or learn a non-obvious pattern, call \`loaf.record_learning\` to save it.\n- Validate stale slices against current code, then call \`loaf.bake\` to mark them fresh.\n`;
+const AGENTS_SECTION = `\n## Loaf knowledge layer\n\nThis repo uses [loafmd](https://github.com/arugyani/loaf) to track atomic, model-curated knowledge slices under \`.loaf/\`, exposed via the MCP tools \`loaf.*\`.\n\n- Prefer \`loaf.search\` and \`loaf.get\` over reading raw source files when answering architectural or \"why is this done this way\" questions.\n- Call \`loaf.status\` at the start of a session to see what exists and what is stale.\n- When you recover from a mistake or learn a non-obvious pattern, call \`loaf.record_learning\` to save it.\n- Validate stale slices against current code, then call \`loaf.bake\` to mark them fresh.\n`;
 
 const GITKEEP = "";
 

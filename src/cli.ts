@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+import fs from "node:fs";
 import path from "node:path";
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 
 import { findRepoRoot, resolveLoafPaths } from "./paths.js";
 import { initLoaf } from "./init.js";
 import {
   listSlices,
+  listCrumbs,
   getSliceById,
   writeSlice,
   updateSliceFrontmatter,
@@ -16,11 +18,26 @@ import { checkStaleness } from "./staleness.js";
 import { currentHead, shortHead, fileExistsInWorkingTree } from "./git.js";
 import { writeIndex } from "./indexer.js";
 
+function mcpConfigBlock(repoRoot: string): string {
+  return JSON.stringify(
+    {
+      mcpServers: {
+        loaf: {
+          command: "npx",
+          args: ["-y", "loafmd-mcp", "--repo", repoRoot],
+        },
+      },
+    },
+    null,
+    2,
+  );
+}
+
 const program = new Command();
 program
-  .name("loaf")
+  .name("loafmd")
   .description("Git-native staleness layer for LLM coding context.")
-  .version("0.1.0");
+  .version("0.1.1");
 
 program
   .command("init")
@@ -29,9 +46,60 @@ program
     const repoRoot = findRepoRoot();
     await initLoaf(repoRoot);
     console.log(`loaf initialized at ${path.join(repoRoot, ".loaf")}`);
-    console.log("next: add to your MCP config:");
-    console.log(`  command: npx loaf-mcp`);
-    console.log(`  cwd: ${repoRoot}`);
+    console.log("");
+    console.log("Add this to your MCP client config (Claude Desktop, Cursor, etc.):");
+    console.log("");
+    console.log(mcpConfigBlock(repoRoot));
+    console.log("");
+    console.log("Then restart your agent. Run `loafmd doctor` to verify the setup.");
+  });
+
+program
+  .command("doctor")
+  .description("Verify git, .loaf/ shape, and print the MCP invocation.")
+  .action(async () => {
+    const checks: { name: string; ok: boolean; detail?: string }[] = [];
+    let repoRoot: string | null = null;
+    try {
+      repoRoot = findRepoRoot();
+      checks.push({ name: "git repo", ok: true, detail: repoRoot });
+    } catch (e) {
+      checks.push({ name: "git repo", ok: false, detail: (e as Error).message });
+    }
+    try {
+      const out = execFileSync("git", ["--version"], { encoding: "utf8" }).trim();
+      checks.push({ name: "git binary", ok: true, detail: out });
+    } catch {
+      checks.push({ name: "git binary", ok: false, detail: "git not found on PATH" });
+    }
+    if (repoRoot) {
+      const paths = resolveLoafPaths(repoRoot);
+      for (const [label, p] of [
+        [".loaf/", paths.loaf],
+        [".loaf/slices/", paths.slices],
+        [".loaf/crumbs/", paths.crumbs],
+        [".loaf/config.json", paths.config],
+        [".loaf/index.json", paths.index],
+      ] as const) {
+        checks.push({ name: label, ok: fs.existsSync(p), detail: p });
+      }
+      const slices = await listSlices(repoRoot);
+      const crumbs = await listCrumbs(repoRoot);
+      checks.push({
+        name: "slice/crumb count",
+        ok: true,
+        detail: `${slices.length} slice(s), ${crumbs.length} crumb(s)`,
+      });
+    }
+    for (const c of checks) {
+      console.log(`${c.ok ? "ok  " : "FAIL"}  ${c.name}${c.detail ? ` — ${c.detail}` : ""}`);
+    }
+    if (repoRoot) {
+      console.log("");
+      console.log("MCP config block:");
+      console.log(mcpConfigBlock(repoRoot));
+    }
+    if (checks.some((c) => !c.ok)) process.exit(1);
   });
 
 program

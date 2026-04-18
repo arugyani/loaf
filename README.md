@@ -1,4 +1,4 @@
-# Loaf
+# loafmd
 
 A git-native staleness layer for LLM coding context. Atomic markdown nodes that live in the repo, track freshness against git commits, and expose themselves via MCP.
 
@@ -24,34 +24,36 @@ Not a "second brain." Not auto-capture. A pull-based, git-native, model-curated 
 ## Install
 
 ```
-npm install -g loaf          # global CLI
-# or
-npx loaf init                # one-off
+npm install -g loafmd           # installs `loafmd` and `loafmd-mcp` globally
+# or one-off:
+npx -y loafmd init
 ```
 
 ## Quick start
 
 ```
 cd your-repo
-loaf init                    # scaffolds .loaf/, writes AGENTS.md entry
-loaf status                  # shows what's there
-loaf add --title "Auth token refresh flow" --file src/auth/token.ts --file src/auth/middleware.ts
-loaf bake auth-token-refresh # mark fresh at HEAD after editing
+loafmd init                     # scaffolds .loaf/, writes AGENTS.md, prints an MCP config block
+loafmd status                   # shows what's there
+loafmd add --title "Auth token refresh flow" --file src/auth/token.ts --file src/auth/middleware.ts
+loafmd bake auth-token-refresh  # mark fresh at HEAD after editing
+loafmd doctor                   # verify git, .loaf/ shape, print MCP invocation
 ```
 
-Then point your MCP-compatible agent at `loaf-mcp`:
+`loafmd init` prints a ready-to-paste MCP client config. It looks like this:
 
 ```jsonc
 {
   "mcpServers": {
     "loaf": {
       "command": "npx",
-      "args": ["loaf-mcp"],
-      "cwd": "/absolute/path/to/your/repo"
+      "args": ["-y", "loafmd-mcp", "--repo", "/absolute/path/to/your/repo"]
     }
   }
 }
 ```
+
+The `--repo` flag is optional — the server also honors `$LOAF_REPO` and falls back to walking up from `cwd` to find `.git/`. Passing it explicitly is safer because MCP clients don't always set `cwd` the way you expect.
 
 ## Shape on disk
 
@@ -109,15 +111,16 @@ into a pure provider without updating [auth-token-refresh].
 
 ## CLI
 
-| Command        | Purpose                                                                     |
-| -------------- | --------------------------------------------------------------------------- |
-| `loaf init`    | Scaffold `.loaf/`, write `AGENTS.md` entry.                                 |
-| `loaf status`  | Stale/fresh counts, recent slices.                                          |
-| `loaf add`     | Scaffold a new slice (opens `$EDITOR`).                                     |
-| `loaf bake`    | Re-anchor a slice to HEAD.                                                  |
-| `loaf prune`   | Remove slices whose cited files no longer exist.                            |
-| `loaf reindex` | Rebuild `index.json`.                                                       |
-| `loaf mcp`     | Start the MCP server on stdio (same binary as `loaf-mcp`).                  |
+| Command          | Purpose                                                                     |
+| ---------------- | --------------------------------------------------------------------------- |
+| `loafmd init`    | Scaffold `.loaf/`, write `AGENTS.md`, print MCP config.                     |
+| `loafmd status`  | Stale/fresh counts, recent slices.                                          |
+| `loafmd add`     | Scaffold a new slice (opens `$EDITOR`).                                     |
+| `loafmd bake`    | Re-anchor a slice to HEAD.                                                  |
+| `loafmd prune`   | Remove slices whose cited files no longer exist.                            |
+| `loafmd reindex` | Rebuild `index.json`.                                                       |
+| `loafmd doctor`  | Verify environment and print the MCP invocation.                            |
+| `loafmd mcp`     | Start the MCP server on stdio (same binary as `loafmd-mcp`).                |
 
 ## How staleness works
 
@@ -146,11 +149,13 @@ No hard blocks — hard blocks create workarounds. Soft signals create the right
 npm install
 npm run build
 npm test
+npm link                      # makes `loafmd` and `loafmd-mcp` resolve to this checkout
 ```
 
 ## Status
 
 v1.0 scope. File-level citations only. TypeScript. Filesystem only, no DB.
+Published as `loafmd` on npm because `loaf` was taken.
 See [`bench/`](./bench/) for the benchmark harness.
 
 ## License

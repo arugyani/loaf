@@ -1,12 +1,12 @@
 {
-  "name": "loaf",
-  "version": "0.1.0",
+  "name": "loafmd",
+  "version": "0.1.1",
   "description": "Git-native staleness layer for LLM coding context. Atomic markdown slices exposed via MCP.",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "loaf": "dist/cli.js",
-    "loaf-mcp": "dist/mcp.js"
+    "loafmd": "dist/cli.js",
+    "loafmd-mcp": "dist/mcp.js"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,6 +32,17 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arugyani/loaf.git"
+  },
+  "homepage": "https://github.com/arugyani/loaf#readme",
+  "bugs": {
+    "url": "https://github.com/arugyani/loaf/issues"
   },
   "keywords": [
     "mcp",
