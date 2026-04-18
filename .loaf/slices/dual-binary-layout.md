@@ -6,7 +6,7 @@ cited_files:
   - src/mcp.ts
   - package.json
   - tsconfig.json
-last_baked_commit: 57d8a2f74b0b339faacdf8d2abe98718118e9d48
+last_baked_commit: 59c0c114a023d43f89bd7f7370426ec81954de05
 created_by: model
 tags:
   - packaging

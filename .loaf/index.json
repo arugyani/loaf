@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-04-18T05:08:00.020Z",
+  "generated_at": "2026-04-18T05:13:15.164Z",
   "slices": [
     {
       "id": "dual-binary-layout",
@@ -16,7 +16,7 @@
         "package.json",
         "tsconfig.json"
       ],
-      "last_baked_commit": "57d8a2f74b0b339faacdf8d2abe98718118e9d48",
+      "last_baked_commit": "59c0c114a023d43f89bd7f7370426ec81954de05",
       "path": ".loaf/slices/dual-binary-layout.md"
     },
     {
