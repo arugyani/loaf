@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "loafmd": "dist/cli.js",
-    "loafmd-mcp": "dist/mcp.js"
+    "loaf": "dist/cli.js",
+    "loaf-mcp": "dist/mcp.js"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

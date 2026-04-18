@@ -19,12 +19,14 @@ import { currentHead, shortHead, fileExistsInWorkingTree } from "./git.js";
 import { writeIndex } from "./indexer.js";
 
 function mcpConfigBlock(repoRoot: string): string {
+  // `npx -y -p loafmd loaf-mcp` tells npx: install the package `loafmd`
+  // (not `loaf-mcp`, which is the bin name), then run its `loaf-mcp` bin.
   return JSON.stringify(
     {
       mcpServers: {
         loaf: {
           command: "npx",
-          args: ["-y", "loafmd-mcp", "--repo", repoRoot],
+          args: ["-y", "-p", "loafmd", "loaf-mcp", "--repo", repoRoot],
         },
       },
     },
@@ -35,8 +37,8 @@ function mcpConfigBlock(repoRoot: string): string {
 
 const program = new Command();
 program
-  .name("loafmd")
-  .description("Git-native staleness layer for LLM coding context.")
+  .name("loaf")
+  .description("Git-native staleness layer for LLM coding context. (npm package: loafmd)")
   .version("0.1.1");
 
 program
@@ -51,7 +53,7 @@ program
     console.log("");
     console.log(mcpConfigBlock(repoRoot));
     console.log("");
-    console.log("Then restart your agent. Run `loafmd doctor` to verify the setup.");
+    console.log("Then restart your agent. Run `loaf doctor` to verify the setup.");
   });
 
 program

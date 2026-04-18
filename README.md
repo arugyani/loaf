@@ -4,6 +4,8 @@ A git-native staleness layer for LLM coding context. Atomic markdown nodes that 
 
 Bread goes stale. You can always bake more.
 
+> The npm package is named `loafmd` because `loaf` was taken on the registry. The command you actually type is `loaf`.
+
 ## What it is
 
 Loaf solves three failure modes in LLM coding workflows:
@@ -24,36 +26,48 @@ Not a "second brain." Not auto-capture. A pull-based, git-native, model-curated 
 ## Install
 
 ```
-npm install -g loafmd           # installs `loafmd` and `loafmd-mcp` globally
-# or one-off:
-npx -y loafmd init
+npm install -g loafmd     # installs the `loaf` and `loaf-mcp` binaries globally
+loaf --version
+```
+
+If `npm install -g loafmd` fails with `EEXIST` because a stale `loaf` binary is already on your PATH from a prior install, free the slot first:
+
+```
+npm uninstall -g loaf
+npm install -g loafmd
+```
+
+One-off without installing:
+
+```
+npx -y -p loafmd loaf init
 ```
 
 ## Quick start
 
 ```
 cd your-repo
-loafmd init                     # scaffolds .loaf/, writes AGENTS.md, prints an MCP config block
-loafmd status                   # shows what's there
-loafmd add --title "Auth token refresh flow" --file src/auth/token.ts --file src/auth/middleware.ts
-loafmd bake auth-token-refresh  # mark fresh at HEAD after editing
-loafmd doctor                   # verify git, .loaf/ shape, print MCP invocation
+loaf init                     # scaffolds .loaf/, writes AGENTS.md, prints an MCP config block
+loaf status                   # shows what's there
+loaf add --title "Auth token refresh flow" --file src/auth/token.ts --file src/auth/middleware.ts
+loaf bake auth-token-refresh  # mark fresh at HEAD after editing
+loaf doctor                   # verify git, .loaf/ shape, print MCP invocation
 ```
 
-`loafmd init` prints a ready-to-paste MCP client config. It looks like this:
+`loaf init` prints a ready-to-paste MCP client config. It looks like this:
 
 ```jsonc
 {
   "mcpServers": {
     "loaf": {
       "command": "npx",
-      "args": ["-y", "loafmd-mcp", "--repo", "/absolute/path/to/your/repo"]
+      "args": ["-y", "-p", "loafmd", "loaf-mcp", "--repo", "/absolute/path/to/your/repo"]
     }
   }
 }
 ```
 
-The `--repo` flag is optional — the server also honors `$LOAF_REPO` and falls back to walking up from `cwd` to find `.git/`. Passing it explicitly is safer because MCP clients don't always set `cwd` the way you expect.
+The `-p loafmd` tells npx which npm package to fetch; `loaf-mcp` is the binary inside it. `--repo` is optional — the server also honors `$LOAF_REPO` and falls back to walking up from `cwd` — but passing it explicitly avoids surprises when clients don't set `cwd` the way you expect.
 
 ## Shape on disk
 
@@ -111,16 +125,16 @@ into a pure provider without updating [auth-token-refresh].
 
 ## CLI
 
-| Command          | Purpose                                                                     |
-| ---------------- | --------------------------------------------------------------------------- |
-| `loafmd init`    | Scaffold `.loaf/`, write `AGENTS.md`, print MCP config.                     |
-| `loafmd status`  | Stale/fresh counts, recent slices.                                          |
-| `loafmd add`     | Scaffold a new slice (opens `$EDITOR`).                                     |
-| `loafmd bake`    | Re-anchor a slice to HEAD.                                                  |
-| `loafmd prune`   | Remove slices whose cited files no longer exist.                            |
-| `loafmd reindex` | Rebuild `index.json`.                                                       |
-| `loafmd doctor`  | Verify environment and print the MCP invocation.                            |
-| `loafmd mcp`     | Start the MCP server on stdio (same binary as `loafmd-mcp`).                |
+| Command        | Purpose                                                                     |
+| -------------- | --------------------------------------------------------------------------- |
+| `loaf init`    | Scaffold `.loaf/`, write `AGENTS.md`, print MCP config.                     |
+| `loaf status`  | Stale/fresh counts, recent slices.                                          |
+| `loaf add`     | Scaffold a new slice (opens `$EDITOR`).                                     |
+| `loaf bake`    | Re-anchor a slice to HEAD.                                                  |
+| `loaf prune`   | Remove slices whose cited files no longer exist.                            |
+| `loaf reindex` | Rebuild `index.json`.                                                       |
+| `loaf doctor`  | Verify environment and print the MCP invocation.                            |
+| `loaf mcp`     | Start the MCP server on stdio (same binary as `loaf-mcp`).                  |
 
 ## How staleness works
 
@@ -149,13 +163,13 @@ No hard blocks — hard blocks create workarounds. Soft signals create the right
 npm install
 npm run build
 npm test
-npm link                      # makes `loafmd` and `loafmd-mcp` resolve to this checkout
+npm link                   # makes `loaf` and `loaf-mcp` resolve to this checkout
 ```
 
 ## Status
 
 v1.0 scope. File-level citations only. TypeScript. Filesystem only, no DB.
-Published as `loafmd` on npm because `loaf` was taken.
+Published as `loafmd` on npm; installs the `loaf` and `loaf-mcp` binaries.
 See [`bench/`](./bench/) for the benchmark harness.
 
 ## License
