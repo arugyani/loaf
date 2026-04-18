@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-04-18T02:34:13.453Z",
+  "generated_at": "2026-04-18T05:08:00.020Z",
   "slices": [
     {
       "id": "dual-binary-layout",
@@ -16,7 +16,7 @@
         "package.json",
         "tsconfig.json"
       ],
-      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2",
+      "last_baked_commit": "57d8a2f74b0b339faacdf8d2abe98718118e9d48",
       "path": ".loaf/slices/dual-binary-layout.md"
     },
     {
@@ -30,7 +30,7 @@
       "cited_files": [
         "src/mcp.ts"
       ],
-      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2",
+      "last_baked_commit": "57d8a2f74b0b339faacdf8d2abe98718118e9d48",
       "path": ".loaf/slices/mcp-session-hint.md"
     },
     {

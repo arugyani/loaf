@@ -6,11 +6,13 @@ cited_files:
   - src/mcp.ts
   - package.json
   - tsconfig.json
-last_baked_commit: PENDING
+last_baked_commit: 57d8a2f74b0b339faacdf8d2abe98718118e9d48
 created_by: model
-tags: [packaging, cli, mcp]
+tags:
+  - packaging
+  - cli
+  - mcp
 ---
-
 `package.json` publishes two bin names from one build: `loafmd` → `dist/cli.js`, `loafmd-mcp` → `dist/mcp.js`. They're separate entrypoints, not a wrapper over a common main, because the MCP server must claim stdio immediately on process start — any early stdout from CLI argument parsing or commander help text would corrupt the JSON-RPC stream.
 
 The package is named `loafmd` (not `loaf`) because the `loaf` slot on npm was taken. Internal module names, MCP tool names (`loaf.status`, `loaf.get`, …), and the `.loaf/` directory all keep the short form. Only the npm package and the CLI binary are suffixed.
