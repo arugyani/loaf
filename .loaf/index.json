@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-04-18T05:13:15.164Z",
+  "generated_at": "2026-04-18T05:13:42.592Z",
   "slices": [
     {
       "id": "dual-binary-layout",
@@ -46,7 +46,7 @@
         "src/types.ts",
         "src/paths.ts"
       ],
-      "last_baked_commit": "afc58c7e8549da0a5ece78de3f508b1d042213a2",
+      "last_baked_commit": "0ea6541f9b7864643bc0f4bd2609cb63e6bae9dd",
       "path": ".loaf/slices/slice-frontmatter-contract.md"
     },
     {
