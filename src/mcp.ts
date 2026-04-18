@@ -7,8 +7,28 @@ import {
   type Tool,
 } from "@modelcontextprotocol/sdk/types.js";
 
+import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { findRepoRoot } from "./paths.js";
+
+function packageVersion(): string {
+  let dir = path.dirname(fileURLToPath(import.meta.url));
+  for (let i = 0; i < 5; i++) {
+    const candidate = path.join(dir, "package.json");
+    if (fs.existsSync(candidate)) {
+      try {
+        return JSON.parse(fs.readFileSync(candidate, "utf8")).version ?? "unknown";
+      } catch {
+        return "unknown";
+      }
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return "unknown";
+}
 import {
   listSlices,
   getSliceById,
@@ -156,7 +176,7 @@ const tools: Tool[] = [
 ];
 
 const server = new Server(
-  { name: "loaf", version: "0.1.0" },
+  { name: "loaf", version: packageVersion() },
   { capabilities: { tools: {} } },
 );
 

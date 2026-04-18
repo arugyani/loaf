@@ -1,6 +1,6 @@
 {
   "name": "loafmd",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "Git-native staleness layer for LLM coding context. Atomic markdown slices exposed via MCP.",
   "license": "MIT",
   "type": "module",

@@ -2,6 +2,7 @@
 import { Command } from "commander";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawn, execFileSync } from "node:child_process";
 
 import { findRepoRoot, resolveLoafPaths } from "./paths.js";
@@ -35,11 +36,32 @@ function mcpConfigBlock(repoRoot: string): string {
   );
 }
 
+function packageVersion(): string {
+  // Read from the installed package.json so `loaf --version` never drifts
+  // from whatever npm thinks this install is. Walk up from this file —
+  // works both in `dist/` (sibling of package.json) and in local dev.
+  let dir = path.dirname(fileURLToPath(import.meta.url));
+  for (let i = 0; i < 5; i++) {
+    const candidate = path.join(dir, "package.json");
+    if (fs.existsSync(candidate)) {
+      try {
+        return JSON.parse(fs.readFileSync(candidate, "utf8")).version ?? "unknown";
+      } catch {
+        return "unknown";
+      }
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return "unknown";
+}
+
 const program = new Command();
 program
   .name("loaf")
   .description("Git-native staleness layer for LLM coding context. (npm package: loafmd)")
-  .version("0.1.1");
+  .version(packageVersion());
 
 program
   .command("init")
