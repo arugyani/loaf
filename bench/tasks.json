@@ -1,0 +1,20 @@
+{
+  "description": "Realistic tasks for evaluating Loaf against alternative context strategies. Fill this out against the dogfood repo once chosen.",
+  "approaches": ["baseline", "full-context", "claude-md", "loaf"],
+  "tasks": [
+    {
+      "id": "example-001",
+      "category": "bug-fix",
+      "prompt": "Fix the token refresh race condition that causes logged-in users to be randomly signed out under load.",
+      "golden_files": ["src/auth/token.ts", "src/auth/middleware.ts"],
+      "notes": "Requires knowing the token refresh flow is not idempotent — the kind of thing a slice would encode."
+    },
+    {
+      "id": "example-002",
+      "category": "architecture-question",
+      "prompt": "Why does UserContext mutate external state in useEffect rather than being a pure provider?",
+      "golden_files": ["src/state/UserContext.tsx"],
+      "notes": "Answerable via a crumb. Without one, the model will propose an incorrect refactor."
+    }
+  ]
+}
