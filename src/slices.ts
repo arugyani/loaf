@@ -12,7 +12,11 @@ import type {
 import { resolveLoafPaths, slugify, fileSlug } from "./paths.js";
 
 function dump(fm: Record<string, unknown>, body: string): string {
-  return matter.stringify(body.endsWith("\n") ? body : body + "\n", fm);
+  // js-yaml refuses to serialize `undefined`, so strip those keys before
+  // stringify. Spread of a Partial<T> can leave `key: undefined` behind.
+  const cleaned: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(fm)) if (v !== undefined) cleaned[k] = v;
+  return matter.stringify(body.endsWith("\n") ? body : body + "\n", cleaned);
 }
 
 export async function readSlice(filePath: string): Promise<Slice> {
